@@ -1,0 +1,27 @@
+# Maintainer: Tales A. Mendonça <talesam@gmail.com>
+
+pkgname=deepin-application-manager
+pkgver=1.1.7
+pkgrel=1
+pkgdesc='App manager of Deepin Desktop Environment'
+arch=('x86_64')
+url="https://github.com/linuxdeepin/dde-application-manager"
+license=('GPL3')
+depends=('qt6-base' 'glibc' 'gcc-libs' 'systemd-libs' 'deepin-wloutput-daemon' 'startdde')
+makedepends=('cmake' 'ninja' 'gtest')
+groups=('deepin')
+source=("https://github.com/linuxdeepin/dde-application-manager/archive/$pkgver/$pkgname-$pkgver.tar.gz")
+sha512sums=('SKIP')
+
+build() {
+  cd dde-application-manager-$pkgver
+  cmake . -GNinja -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_SYSCONFDIR=/etc -DCMAKE_INSTALL_LIBEXECDIR=lib
+  ninja
+}
+
+package() {
+  cd dde-application-manager-$pkgver
+  DESTDIR="$pkgdir" ninja install
+  rm -r "$pkgdir"/etc/dpkg
+  rmdir "$pkgdir"/etc
+}
